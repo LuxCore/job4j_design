@@ -40,9 +40,8 @@ public class MultiDimArrayIterator implements Iterator<Integer> {
 			if (data[i].length > 0 && j < data[i].length) {
 				result = true;
 				break;
-			} else {
-				j = 0;
 			}
+			j = 0;
 		}
 		return result;
 	}
@@ -56,15 +55,20 @@ public class MultiDimArrayIterator implements Iterator<Integer> {
 		if (!hasNext()) {
 			throw new NoSuchElementException("Элементы в массиве отсутствуют.");
 		}
-		Integer result = null;
-		for (; row < data.length; row++) {
-			if (data[row].length > 0 && col < data[row].length) {
-				result = data[row][col++];
-				break;
-			} else {
-				col = 0;
-			}
+		return nextElement();
+	}
+
+	/**
+	 * Рекурсия, которая возвращает элемент сразу, если он есть, и
+	 * переходит к следующему внутреннему массиву, если текущий - пустой.
+	 * @return Целое число внутреннего массива.
+	 */
+	private Integer nextElement() {
+		if (0 < data[row].length && data[row].length > col) {
+			return data[row][col++];
 		}
-		return result;
+		row++;
+		col = 0;
+		return nextElement();
 	}
 }

@@ -18,7 +18,7 @@ class MultiDimArrayIteratorTest {
 	void testNextWhenArrayHasEmptyAndNonEmptyArrays() {
 		int[][] in = {
 				{}, {11, 12}, {}, {31}, {},
-				{51, 52, 53}, {}, {71, 72}, {}
+				{51, 52, 53}, {}, {71, 72}
 		};
 		MultiDimArrayIterator it = new MultiDimArrayIterator(in);
 		assertAll(
