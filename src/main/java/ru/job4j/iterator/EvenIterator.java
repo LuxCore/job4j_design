@@ -31,22 +31,12 @@ public class EvenIterator implements Iterator<Integer> {
 	 */
 	@Override
 	public boolean hasNext() {
-		return nextPointer() > -1;
-	}
-
-	/**
-	 * Возвращает индекс элемента массива, если в наличии есть следующее
-	 * чётное число.
-	 * @return Индекс элемента массива, в котором содержится чётное число. В
-	 * случае отсутствия возвращается -1.
-	 */
-	private int nextPointer() {
-		for (int i = cursor; i < data.length; i++) {
-			if (data[i] % 2 == 0) {
-				return i;
+		for (; cursor < data.length; cursor++) {
+			if (data[cursor] % 2 == 0) {
+				return true;
 			}
 		}
-		return -1;
+		return false;
 	}
 
 	/**
@@ -60,7 +50,6 @@ public class EvenIterator implements Iterator<Integer> {
 		if (!hasNext()) {
 			throw new NoSuchElementException("Чётные числа отсутствуют");
 		}
-		cursor = nextPointer();
 		return data[cursor++];
 	}
 }
