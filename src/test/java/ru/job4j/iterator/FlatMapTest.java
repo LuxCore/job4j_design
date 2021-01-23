@@ -12,6 +12,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -21,8 +22,8 @@ class FlatMapTest {
 	@DisplayName("should return elements after first empty iterator")
 	public void whenFirstIteratorIsEmpty() {
 		Iterator<Iterator<Integer>> data = List.of(
-				Collections.<Integer>emptyIterator(),
 				List.of(1, 2, 3).iterator(),
+				Collections.<Integer>emptyIterator(),
 				List.of(4, 5).iterator()
 		).iterator();
 		FlatMap<Integer> flat = new FlatMap<>(data);
@@ -31,7 +32,8 @@ class FlatMapTest {
 				() -> assertThat(flat.next(), is(equalTo(2))),
 				() -> assertThat(flat.next(), is(equalTo(3))),
 				() -> assertThat(flat.next(), is(equalTo(4))),
-				() -> assertThat(flat.next(), is(equalTo(5)))
+				() -> assertThat(flat.next(), is(equalTo(5))),
+				() -> assertFalse(flat.hasNext())
 		);
 	}
 
@@ -46,7 +48,8 @@ class FlatMapTest {
 		assertAll(
 				() -> assertThat(flat.next(), is(equalTo(1))),
 				() -> assertThat(flat.next(), is(equalTo(2))),
-				() -> assertThat(flat.next(), is(equalTo(3)))
+				() -> assertThat(flat.next(), is(equalTo(3))),
+				() -> assertFalse(flat.hasNext())
 		);
 	}
 
@@ -60,7 +63,8 @@ class FlatMapTest {
 		assertAll(
 				() -> assertThat(flat.next(), is(equalTo(1))),
 				() -> assertThat(flat.next(), is(equalTo(2))),
-				() -> assertThat(flat.next(), is(equalTo(3)))
+				() -> assertThat(flat.next(), is(equalTo(3))),
+				() -> assertFalse(flat.hasNext())
 		);
 	}
 
@@ -73,7 +77,10 @@ class FlatMapTest {
 		FlatMap<Integer> flat = new FlatMap<>(data);
 		assertAll(
 				() -> assertTrue(flat.hasNext()),
-				() -> assertTrue(flat.hasNext())
+				() -> assertTrue(flat.hasNext()),
+				() -> assertThat(flat.next(), is(equalTo(1))),
+				() -> assertFalse(flat.hasNext()),
+				() -> assertFalse(flat.hasNext())
 		);
 	}
 
@@ -86,7 +93,7 @@ class FlatMapTest {
 		FlatMap<Integer> flat = new FlatMap<>(data);
 		assertAll(
 				() -> assertThat(flat.next(), is(1)),
-				() -> assertThat(flat.hasNext(), is(false))
+				() -> assertFalse(flat.hasNext())
 		);
 	}
 
@@ -98,5 +105,32 @@ class FlatMapTest {
 		).iterator();
 		FlatMap<Integer> flat = new FlatMap<>(data);
 		assertThrows(NoSuchElementException.class, flat::next);
+	}
+
+	@Test
+	@DisplayName("when few empty iterators are at the begin, end and inside")
+	public void whenFewEmptyIteratorsEverywhere() {
+		Iterator<Iterator<Integer>> data = List.of(
+				Collections.<Integer>emptyIterator(),
+				Collections.<Integer>emptyIterator(),
+				Collections.<Integer>emptyIterator(),
+				List.of(1, 2, 3).iterator(),
+				Collections.<Integer>emptyIterator(),
+				Collections.<Integer>emptyIterator(),
+				Collections.<Integer>emptyIterator(),
+				List.of(4, 5).iterator(),
+				Collections.<Integer>emptyIterator(),
+				Collections.<Integer>emptyIterator(),
+				Collections.<Integer>emptyIterator()
+				).iterator();
+		FlatMap<Integer> flat = new FlatMap<>(data);
+		assertAll(
+				() -> assertThat(flat.next(), is(equalTo(1))),
+				() -> assertThat(flat.next(), is(equalTo(2))),
+				() -> assertThat(flat.next(), is(equalTo(3))),
+				() -> assertThat(flat.next(), is(equalTo(4))),
+				() -> assertThat(flat.next(), is(equalTo(5))),
+				() -> assertFalse(flat.hasNext())
+		);
 	}
 }
