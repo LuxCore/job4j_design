@@ -1,11 +1,7 @@
-package ru.job4j.iterator;
+package ru.job4j.generics;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.job4j.generics.Animal;
-import ru.job4j.generics.Generics;
-import ru.job4j.generics.Predator;
-import ru.job4j.generics.Tiger;
 
 import java.util.ArrayList;
 import java.util.List;
