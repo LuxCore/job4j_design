@@ -59,6 +59,7 @@ class RoleStoreTest {
 				() -> assertTrue(roles.replace("Role2", new Role("Role22"))),
 				() -> assertNull(roles.findById("Role22")),
 				() -> assertEquals(new Role("Role22"), roles.findById("Role2")),
+				() -> assertTrue(roles.replace("Role1", null)),
 				() -> assertNull(roles.findById("Role1")),
 				() -> assertNotEquals(role2, roles.findById("Role1")),
 				() -> assertNull(roles.findById("Role3")),

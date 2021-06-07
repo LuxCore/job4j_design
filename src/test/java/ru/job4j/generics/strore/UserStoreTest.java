@@ -56,6 +56,7 @@ class UserStoreTest {
 				() -> assertTrue(users.replace("User2", new User("User22"))),
 				() -> assertNull(users.findById("User22")),
 				() -> assertEquals(new User("User22"), users.findById("User2")),
+				() -> assertTrue(users.replace("User1", null)),
 				() -> assertNull(users.findById("User1")),
 				() -> assertNotEquals(user2, users.findById("User1")),
 				() -> assertNull(users.findById("User3")),
