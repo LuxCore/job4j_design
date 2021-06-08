@@ -2,9 +2,11 @@ package ru.job4j.generics;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Класс, реализующий обёртку для массива.
@@ -19,6 +21,10 @@ public class SimpleArray<T> implements Iterable<T> {
 	 * Указатель на номер ячейки, в которую можно вставлять значения.
 	 */
 	private int pointer;
+	/**
+	 * Счётчик изменений в хранилище. Используется для итератора.
+	 */
+	private int modificationCount;
 	/**
 	 * Начальный размер массива.
 	 */
@@ -41,7 +47,7 @@ public class SimpleArray<T> implements Iterable<T> {
 	 */
 	public SimpleArray(final int size) {
 		this.data = EMPTY_DATA;
-		this.data = increaseStorage(INITIAL_SIZE);
+		this.data = increaseStorage(size);
 	}
 
 	/**
@@ -65,6 +71,7 @@ public class SimpleArray<T> implements Iterable<T> {
 			data = increaseStorage(data.length + INITIAL_SIZE);
 		}
 		data[pointer++] = element;
+		modificationCount++;
 	}
 
 	/**
@@ -81,6 +88,7 @@ public class SimpleArray<T> implements Iterable<T> {
 	public boolean set(final int index, final T element) {
 		Objects.checkIndex(index, pointer);
 		data[index] = element;
+		modificationCount++;
 		return true;
 	}
 
@@ -96,6 +104,7 @@ public class SimpleArray<T> implements Iterable<T> {
 		T element = (T) data[index];
 		System.arraycopy(data, index + 1, data, index, --pointer - index);
 		data[pointer] = null;
+		modificationCount++;
 		return element;
 	}
 
@@ -109,6 +118,14 @@ public class SimpleArray<T> implements Iterable<T> {
 	public T get(final int index) {
 		Objects.checkIndex(index, pointer);
 		return (T) data[index];
+	}
+
+	/**
+	 * Количество элементов в SimpleArray.
+	 * @return Количество элементов в SimpleArray.
+	 */
+	int size() {
+		return pointer;
 	}
 
 	/**
@@ -128,6 +145,12 @@ public class SimpleArray<T> implements Iterable<T> {
 		 * Указатель на следующий элемент внутреннего массива data.
 		 */
 		private int itrPointer;
+		/**
+		 * Ожидаемое количество изменений в хранилище на время работы итератора:
+		 * если во время работы итератора были произведены манипуляции с
+		 * элементами, то он прекращает свою работу.
+		 */
+		private int expectedModificationCount = modificationCount;
 
 		/**
 		 * Проверка на наличие следующего элемента в data.
@@ -147,10 +170,17 @@ public class SimpleArray<T> implements Iterable<T> {
 		@Override
 		@SuppressWarnings("unchecked")
 		public T next() {
+			checkForModifications();
 			if (!hasNext()) {
 				throw new NoSuchElementException("Запрашиваемый элемент отсутствует.");
 			}
 			return (T) data[itrPointer++];
+		}
+
+		final void checkForModifications() {
+			if (expectedModificationCount != modificationCount) {
+				throw new ConcurrentModificationException();
+			}
 		}
 	}
 
@@ -160,6 +190,9 @@ public class SimpleArray<T> implements Iterable<T> {
 	 */
 	@Override
 	public String toString() {
-		return Arrays.toString(data);
+		return Arrays.stream(data)
+				.limit(pointer)
+				.map(String::valueOf)
+				.collect(Collectors.joining(", ", "[", "]"));
 	}
 }

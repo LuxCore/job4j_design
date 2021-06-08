@@ -3,6 +3,7 @@ package ru.job4j.generics;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -19,9 +20,24 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class SimpleArrayTest {
 
 	@Test
+	@DisplayName("should throw IndexOutOfBoundsException when it is empty")
+	void whenGetFromEmptyStorage() {
+		SimpleArray<String> array = new SimpleArray<>();
+		assertThrows(IndexOutOfBoundsException.class, () -> array.get(0));
+	}
+
+	@Test
+	@DisplayName("should throw IndexOutOfBoundsException when it is empty")
+	void whenGetOutBound() {
+		SimpleArray<String> array = new SimpleArray<>();
+		array.add("first");
+		assertThrows(IndexOutOfBoundsException.class, () -> array.get(1));
+	}
+
+	@Test
 	@DisplayName("should create object by size")
 	void constructBySize() {
-		SimpleArray<Integer> simpleArray = new SimpleArray<>(4);
+		SimpleArray<Integer> simpleArray = new SimpleArray<>(6);
 		simpleArray.add(0);
 		simpleArray.add(1);
 		simpleArray.add(2);
@@ -30,7 +46,7 @@ class SimpleArrayTest {
 		assertAll(
 				() -> assertThat(simpleArray.get(0), is(equalTo(0))),
 				() -> assertThat(simpleArray.get(4), is(equalTo(4))),
-				() -> assertEquals("[0, 1, 2, 3, 4, null, null, null, null, null]", simpleArray.toString())
+				() -> assertEquals("[0, 1, 2, 3, 4]", simpleArray.toString())
 		);
 	}
 
@@ -61,7 +77,8 @@ class SimpleArrayTest {
 		}
 		assertAll(
 				() -> assertThat(simpleArray.get(0), is(equalTo("0"))),
-				() -> assertThat(simpleArray.get(12), is(equalTo("12")))
+				() -> assertThat(simpleArray.get(12), is(equalTo("12"))),
+				() -> assertEquals(simpleArray.size(), 13)
 		);
 	}
 
@@ -109,7 +126,7 @@ class SimpleArrayTest {
 				() -> assertThat(simpleArray.remove(1), is(equalTo("1"))),
 				() -> assertThat(simpleArray.remove(2), is(equalTo("3"))),
 				() -> assertThat(simpleArray.remove(5), is(equalTo("7"))),
-				() -> assertEquals("[0, 2, 4, 5, 6, 8, 9, null, null, null]", simpleArray.toString()),
+				() -> assertEquals("[0, 2, 4, 5, 6, 8, 9]", simpleArray.toString()),
 				() -> assertThat(simpleArray.remove(0), is(equalTo("0"))),
 				() -> assertThat(simpleArray.remove(0), is(equalTo("2"))),
 				() -> assertThat(simpleArray.remove(0), is(equalTo("4"))),
@@ -117,7 +134,7 @@ class SimpleArrayTest {
 				() -> assertThat(simpleArray.remove(0), is(equalTo("6"))),
 				() -> assertThat(simpleArray.remove(0), is(equalTo("8"))),
 				() -> assertThat(simpleArray.remove(0), is(equalTo("9"))),
-				() -> assertEquals("[null, null, null, null, null, null, null, null, null, null]", simpleArray.toString())
+				() -> assertEquals("[]", simpleArray.toString())
 		);
 	}
 
@@ -146,5 +163,41 @@ class SimpleArrayTest {
 				() -> assertFalse(actual.hasNext()),
 				() -> assertThrows(NoSuchElementException.class, actual::next)
 		);
+	}
+
+	@Test
+	@DisplayName("should throw ConcurrentModificationException when element is added")
+	void whenElementIsAddedDuringIterator() {
+		SimpleArray<String> simpleArray = new SimpleArray<>();
+		for (int i = 0; i < 3; i++) {
+			simpleArray.add(String.valueOf(i));
+		}
+		Iterator<String> actual = simpleArray.iterator();
+		simpleArray.add("3");
+		assertThrows(ConcurrentModificationException.class, actual::next);
+	}
+
+	@Test
+	@DisplayName("should throw ConcurrentModificationException when element is deleted")
+	void whenElementIsDeletedDuringIterator() {
+		SimpleArray<String> simpleArray = new SimpleArray<>();
+		for (int i = 0; i < 3; i++) {
+			simpleArray.add(String.valueOf(i));
+		}
+		Iterator<String> actual = simpleArray.iterator();
+		simpleArray.remove(1);
+		assertThrows(ConcurrentModificationException.class, actual::next);
+	}
+
+	@Test
+	@DisplayName("should throw ConcurrentModificationException when element is set")
+	void whenElementIsSetDuringIterator() {
+		SimpleArray<String> simpleArray = new SimpleArray<>();
+		for (int i = 0; i < 3; i++) {
+			simpleArray.add(String.valueOf(i));
+		}
+		Iterator<String> actual = simpleArray.iterator();
+		simpleArray.set(0, "00");
+		assertThrows(ConcurrentModificationException.class, actual::next);
 	}
 }
