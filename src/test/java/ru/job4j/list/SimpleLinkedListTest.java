@@ -2,6 +2,7 @@ package ru.job4j.list;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import ru.job4j.generics.strore.User;
 
 import java.util.ConcurrentModificationException;
@@ -43,7 +44,7 @@ class SimpleLinkedListTest {
 	}
 
 	@Test
-	void get1() {
+	void getFromSingleElementList() {
 		SimpleLinkedList<String> strings = new SimpleLinkedList<>();
 		strings.add("String");
 		assertAll(
@@ -54,7 +55,7 @@ class SimpleLinkedListTest {
 	}
 
 	@Test
-	void get2() {
+	void getFromListContainingManyElements() {
 		SimpleLinkedList<Integer> ints = new SimpleLinkedList<>();
 		ints.add(0);
 		ints.add(1);
@@ -71,7 +72,7 @@ class SimpleLinkedListTest {
 	}
 
 	@Test
-	void iterator0() {
+	void iteratorByZeroElementList() {
 		SimpleLinkedList<User> users = new SimpleLinkedList<>();
 		Iterator<User> itr = users.iterator();
 		assertAll(
@@ -81,7 +82,7 @@ class SimpleLinkedListTest {
 	}
 
 	@Test
-	void iterator1() {
+	void iteratorBySingleElementList() {
 		SimpleLinkedList<User> users = new SimpleLinkedList<>();
 		users.add(new User("User69"));
 		Iterator<User> itr = users.iterator();
@@ -93,7 +94,7 @@ class SimpleLinkedListTest {
 	}
 
 	@Test
-	void iteratorMany() {
+	void iteratorByAllElements() {
 		SimpleLinkedList<User> users = new SimpleLinkedList<>();
 		users.add(new User("User1"));
 		users.add(new User("User2"));
@@ -112,13 +113,41 @@ class SimpleLinkedListTest {
 	}
 
 	@Test
-	void iteratorFailFast() {
-		SimpleLinkedList<User> users = new SimpleLinkedList<>();
+	@DisplayName("should throw ConcurrentModificationException")
+	void whenListModifiedDuringIteration() {
+		List<User> users = new SimpleLinkedList<>();
 		users.add(new User("User1"));
 		Iterator<User> itr = users.iterator();
 		users.add(new User("User2"));
 		assertAll(
 				() -> assertThrows(ConcurrentModificationException.class, itr::next)
+		);
+	}
+
+	@Test
+	void whenGetIteratorTwiceThenEveryFromBegin() {
+		List<Integer> list = new SimpleLinkedList<>();
+		list.add(1);
+		list.add(2);
+
+		Iterator<Integer> first = list.iterator();
+		final Executable executable = () -> assertTrue(first.hasNext());
+		assertAll(
+				executable,
+				() -> assertEquals(1, first.next()),
+				executable,
+				() -> assertEquals(2, first.next()),
+				() -> assertFalse(first.hasNext())
+		);
+
+		Iterator<Integer> second = list.iterator();
+		final Executable executable2 = () -> assertTrue(second.hasNext());
+		assertAll(
+				executable2,
+				() -> assertEquals(1, second.next()),
+				executable2,
+				() -> assertEquals(2, second.next()),
+				() -> assertFalse(second.hasNext())
 		);
 	}
 }
