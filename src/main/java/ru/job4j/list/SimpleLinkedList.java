@@ -47,7 +47,7 @@ public class SimpleLinkedList<E> implements List<E> {
 		 * @param value Значение, которое содержится в узле.
 		 */
 		Node(final  V value) {
-			this.value =  value;
+			this.value = value;
 		}
 	}
 	/**
