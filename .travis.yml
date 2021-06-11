@@ -10,6 +10,6 @@ after_success:
 notifications:
   email:
     recipients:
-      -deins.kitrish@outlook.com
+      -denis.kitrish@outlook.com
     on_success: never
     on_failure: always
