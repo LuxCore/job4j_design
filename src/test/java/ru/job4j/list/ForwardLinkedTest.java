@@ -41,6 +41,34 @@ class ForwardLinkedTest {
 	}
 
 	@Test
+	void addDuringIteration() {
+		ForwardLinked<Integer> fl = new ForwardLinked<>();
+		fl.add(1);
+		Iterator<Integer> it = fl.iterator();
+		fl.add(6669);
+		assertThrows(ConcurrentModificationException.class, it::next);
+	}
+
+	@Test
+	void addFirst() {
+		ForwardLinked<String> fl = new ForwardLinked<>();
+		fl.addFirst("First");
+		fl.addFirst("Второй");
+		fl.addFirst("Third");
+		fl.addFirst("Четвёртый");
+		fl.addFirst("6669");
+		assertAll(
+				() -> assertEquals("6669", fl.deleteFirst()),
+				() -> assertEquals(4, fl.size()),
+				() -> assertEquals("Четвёртый", fl.deleteFirst()),
+				() -> assertEquals("Third", fl.deleteFirst()),
+				() -> assertEquals("Второй", fl.deleteFirst()),
+				() -> assertEquals("First", fl.deleteFirst()),
+				() -> assertEquals(0, fl.size())
+		);
+	}
+
+	@Test
 	void deleteFirstWhenEmpty() {
 		ForwardLinked<Integer> fl = new ForwardLinked<>();
 		assertThrows(NullPointerException.class, fl::deleteFirst);
@@ -61,15 +89,6 @@ class ForwardLinkedTest {
 				() -> assertThrows(NullPointerException.class, fl::deleteFirst),
 				() -> assertThrows(NoSuchElementException.class, fl.iterator()::next)
 		);
-	}
-
-	@Test
-	void addDuringIteration() {
-		ForwardLinked<Integer> fl = new ForwardLinked<>();
-		fl.add(1);
-		Iterator<Integer> it = fl.iterator();
-		fl.add(6669);
-		assertThrows(ConcurrentModificationException.class, it::next);
 	}
 
 	@Test

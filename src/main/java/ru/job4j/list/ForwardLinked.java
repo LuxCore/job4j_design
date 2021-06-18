@@ -18,6 +18,10 @@ public class ForwardLinked<T> implements Iterable<T> {
 	 * Количество изменений в списке.
 	 */
 	private int modificationCount;
+	/**
+	 * Количество элементов в списке.
+	 */
+	private int size;
 
 	/**
 	 * Узел списка, содержащий значение.
@@ -60,6 +64,16 @@ public class ForwardLinked<T> implements Iterable<T> {
 		}
 		tail.next = node;
 		modificationCount++;
+		size++;
+	}
+
+	/**
+	 * Добавление элемента в начало списка.
+	 * @param value новое значение, которое необходимо добавить в список.
+	 */
+	public void addFirst(final T value) {
+		head = new Node<>(value, head);
+		size++;
 	}
 
 	/**
@@ -72,7 +86,16 @@ public class ForwardLinked<T> implements Iterable<T> {
 		head = temp.next;
 		temp.next = null;
 		modificationCount++;
+		size--;
 		return temp.value;
+	}
+
+	/**
+	 * Получение количества элементов в списке.
+	 * @return количество элементов в списке.
+	 */
+	public int size() {
+		return size;
 	}
 
 	/**
