@@ -1,6 +1,7 @@
 package ru.job4j.list;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -8,12 +9,13 @@ import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ForwardLinkedTest {
 
 	@Test
-	void add1() {
+	void addOneElement() {
 		ForwardLinked<String> fl = new ForwardLinked<>();
 		fl.add("One");
 		Iterator<String> it = fl.iterator();
@@ -24,7 +26,22 @@ class ForwardLinkedTest {
 	}
 
 	@Test
-	void add2() {
+	void addNullElement() {
+		ForwardLinked<String> fl = new ForwardLinked<>();
+		fl.add("One");
+		fl.add(null);
+		fl.add("3");
+		Iterator<String> it = fl.iterator();
+		assertAll(
+				() -> assertEquals("One", it.next()),
+				() -> assertNull(it.next()),
+				() -> assertEquals("3", it.next()),
+				() -> assertThrows(NoSuchElementException.class, it::next)
+		);
+	}
+
+	@Test
+	void addMultipleElements() {
 		ForwardLinked<String> fl = new ForwardLinked<>();
 		fl.add("One");
 		fl.add("Two");
@@ -105,5 +122,21 @@ class ForwardLinkedTest {
 	void iterateWhenEmpty() {
 		ForwardLinked<Integer> fl = new ForwardLinked<>();
 		assertThrows(NoSuchElementException.class, fl.iterator()::next);
+	}
+
+	@Test
+	void peek() {
+		ForwardLinked<Integer> fl = new ForwardLinked<>();
+		fl.add(1);
+		fl.add(6669);
+		Executable assertEquals1 = () -> assertEquals(1, fl.peek());
+		Executable assertEquals6669 = () -> assertEquals(6669, fl.peek());
+		assertAll(
+				assertEquals1,
+				assertEquals1,
+				() -> assertEquals(1, fl.deleteFirst()),
+				assertEquals6669,
+				assertEquals6669
+		);
 	}
 }

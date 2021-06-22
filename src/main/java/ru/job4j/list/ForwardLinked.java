@@ -79,6 +79,7 @@ public class ForwardLinked<T> implements Iterable<T> {
 	/**
 	 * Удаление головного элемента списка.
 	 * @return значение головного элемента.
+	 * @throws NullPointerException если список пустой.
 	 */
 	public T deleteFirst() {
 		Objects.requireNonNull(head, "ForwardLinked is empty");
@@ -144,5 +145,13 @@ public class ForwardLinked<T> implements Iterable<T> {
 			pointer = pointer.next;
 			return result;
 		}
+	}
+
+	/**
+	 * Получение головного значения.
+	 * @return головное значение.
+	 */
+	public T peek() {
+		return head.value;
 	}
 }
