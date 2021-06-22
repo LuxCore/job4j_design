@@ -13,6 +13,7 @@ public class SimpleStack<T> {
 	/**
 	 * Получение последнего добавленного значения.
 	 * @return последний добавленный элемент.
+	 * @throws NullPointerException если стэк пустой.
 	 */
 	public T pop() {
 		return data.deleteFirst();
@@ -24,5 +25,21 @@ public class SimpleStack<T> {
 	 */
 	public void push(final T value) {
 		data.addFirst(value);
+	}
+
+	/**
+	 * Получение головного элемента стэка.
+	 * @return головной элемент стэка.
+	 */
+	public T peek() {
+		return data.peek();
+	}
+
+	/**
+	 * Получение количества элементов в стэке.
+	 * @return количество элементов в стэке.
+	 */
+	public int size() {
+		return data.size();
 	}
 }
