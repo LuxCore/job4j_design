@@ -56,6 +56,7 @@ public class ForwardLinked<T> implements Iterable<T> {
 		Node<T> node = new Node<>(value, null);
 		if (head == null) {
 			head = node;
+			size++;
 			return;
 		}
 		Node<T> tail = head;
@@ -153,5 +154,26 @@ public class ForwardLinked<T> implements Iterable<T> {
 	 */
 	public T peek() {
 		return head.value;
+	}
+
+	/**
+	 * Формирует связь между элементами односвязного списока в обратном
+	 * порядке.
+	 * @return односвязный список с элементами в обратном порядке.
+	 */
+	public boolean revert() {
+		if (size <= 1) {
+			return false;
+		}
+		Node<T> previous = null;
+		Node<T> current = head;
+		while (current != null) {
+			Node<T> next = current.next;
+			current.next = previous;
+			previous = current;
+			head = current;
+			current = next;
+		}
+		return true;
 	}
 }

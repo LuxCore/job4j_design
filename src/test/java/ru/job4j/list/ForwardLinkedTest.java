@@ -9,6 +9,7 @@ import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -137,6 +138,59 @@ class ForwardLinkedTest {
 				() -> assertEquals(1, fl.deleteFirst()),
 				assertEquals6669,
 				assertEquals6669
+		);
+	}
+
+	@Test
+	void whenSize0ThenReturnFalse() {
+		ForwardLinked<Integer> emptyList = new ForwardLinked<>();
+		assertFalse(emptyList.revert());
+	}
+
+	@Test
+	void whenSize1ThenReturnFalse() {
+		ForwardLinked<Integer> singleList = new ForwardLinked<>();
+		singleList.add(1);
+		assertFalse(singleList.revert());
+	}
+
+	@Test
+	void revertWhen2Elements() {
+		ForwardLinked<Integer> fl = new ForwardLinked<>();
+		fl.add(1);
+		fl.add(6669);
+		fl.revert();
+		Iterator<Integer> it = fl.iterator();
+		Executable sizeEquals2 = () -> assertEquals(2, fl.size());
+		assertAll(
+				sizeEquals2,
+				() -> assertEquals(6669, it.next()),
+				() -> assertEquals(1, it.next()),
+				sizeEquals2
+		);
+	}
+
+	@Test
+	void revertWhenMoreThan2Elements() {
+		ForwardLinked<Integer> fl = new ForwardLinked<>();
+		fl.add(1);
+		fl.add(2);
+		fl.add(3);
+		fl.add(4);
+		fl.add(5);
+		fl.add(6669);
+		fl.revert();
+		Iterator<Integer> it = fl.iterator();
+		Executable sizeEquals6 = () -> assertEquals(6, fl.size());
+		assertAll(
+				sizeEquals6,
+				() -> assertEquals(6669, it.next()),
+				() -> assertEquals(5, it.next()),
+				() -> assertEquals(4, it.next()),
+				() -> assertEquals(3, it.next()),
+				() -> assertEquals(2, it.next()),
+				() -> assertEquals(1, it.next()),
+				sizeEquals6
 		);
 	}
 }
