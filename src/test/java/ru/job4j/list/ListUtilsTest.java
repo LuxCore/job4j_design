@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,6 +28,13 @@ class ListUtilsTest {
 		assertEquals(Arrays.asList(5, 1, 2, 6, 3, 4), input);
 		ListUtils.addBefore(input, 5, 7);
 		assertEquals(Arrays.asList(5, 1, 2, 6, 3, 7, 4), input);
+	}
+
+	@Test
+	void whenAddNullsBeforeIntoListWithFewElements() {
+		List<Integer> input = new ArrayList<>(Arrays.asList(1, 2, 3, 4));
+		ListUtils.addBefore(input, 1, null);
+		assertEquals(Arrays.asList(1, null, 2, 3, 4), input);
 	}
 
 	@Test
@@ -61,6 +69,13 @@ class ListUtilsTest {
 	}
 
 	@Test
+	void whenAddNullsAfterIntoListWithFewElements() {
+		List<Integer> input = new ArrayList<>(Arrays.asList(1, 2, 3, 4));
+		ListUtils.addAfter(input, 2, null);
+		assertEquals(Arrays.asList(1, 2, 3, null, 4), input);
+	}
+
+	@Test
 	void whenAddAfterIntoEmptyListThanEx() {
 		List<Integer> input = new ArrayList<>();
 		assertThrows(IndexOutOfBoundsException.class, () -> ListUtils.addAfter(input, 0, 1));
@@ -80,6 +95,13 @@ class ListUtilsTest {
 	}
 
 	@Test
+	void removeIfNull() {
+		List<Integer> input = new ArrayList<>(Arrays.asList(null, 2, null, null, 5, 6, null));
+		ListUtils.removeIf(input, Objects::isNull);
+		assertEquals(Arrays.asList(2, 5, 6), input);
+	}
+
+	@Test
 	void whenRemoveIfListHasOneElement() {
 		List<String> input = new ArrayList<>();
 		input.add("One");
@@ -95,11 +117,18 @@ class ListUtilsTest {
 	}
 
 	@Test
+	void replaceIfNullWithDefault() {
+		List<Integer> input = new ArrayList<>(Arrays.asList(null, 2, null, 4, 5, null, 7));
+		ListUtils.replaceIf(input, Objects::isNull, 0);
+		assertEquals(Arrays.asList(0, 2, 0, 4, 5, 0, 7), input);
+	}
+
+	@Test
 	void whenRemoveAllAndRemainElements() {
 		List<String> input = new ArrayList<>(
-				Arrays.asList("Один", "2", "Три", "4", "Пять", "6", "Семь"));
+				Arrays.asList("Один", "2", null, "Три", "4", null, "Пять", "6", null, "Семь"));
 		List<String> elements = new ArrayList<>(
-				Arrays.asList("Один", "Три", "Пять", "Семь"));
+				Arrays.asList("Один", "Три", "Пять", "Семь", null));
 		ListUtils.removeAll(input, elements);
 		assertEquals(Arrays.asList("2", "4", "6"), input);
 	}
