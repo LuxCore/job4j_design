@@ -12,7 +12,9 @@ public final class ListUtils {
 	/**
 	 * Скрытый конструктор, т.к. класс является утилитой.
 	 */
-	private ListUtils() { }
+	private ListUtils() {
+	}
+
 	/**
 	 * Добавление {@code value} перед указанным {@code index}.
 	 *
@@ -106,11 +108,8 @@ public final class ListUtils {
 	public static <T> void removeAll(final List<T> list, final List<T> elements) {
 		for (ListIterator<T> li = list.listIterator(); li.hasNext();) {
 			T el = li.next();
-			for (T element : elements) {
-				if (Objects.equals(el, element)) {
-					li.remove();
-					break;
-				}
+			if (elements.contains(el)) {
+				li.remove();
 			}
 		}
 	}
