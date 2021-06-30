@@ -1,6 +1,6 @@
 package ru.job4j.map;
 
-import java.util.Calendar;
+import java.time.LocalDate;
 
 /**
  * Пользователь или просто человек.
@@ -17,7 +17,7 @@ public class User {
 	/**
 	 * День рождения пользователя.
 	 */
-	private Calendar birthday;
+	private LocalDate birthday;
 
 	/**
 	 * Получение имени пользователя.
@@ -55,7 +55,7 @@ public class User {
 	 * Получение дня рождения пользователя.
 	 * @return день рождения пользователя
 	 */
-	public Calendar getBirthday() {
+	public LocalDate getBirthday() {
 		return birthday;
 	}
 
@@ -63,7 +63,7 @@ public class User {
 	 * Установка дня рождения пользователя.
 	 * @param birthday день рождения пользователя.
 	 */
-	public void setBirthday(final Calendar birthday) {
+	public void setBirthday(final LocalDate birthday) {
 		this.birthday = birthday;
 	}
 
@@ -78,7 +78,7 @@ public class User {
 	 * @param children количество детей.
 	 * @param birthday день рождения пользователя.
 	 */
-	public User(final String name, final int children, final Calendar birthday) {
+	public User(final String name, final int children, final LocalDate birthday) {
 		this.name = name;
 		this.children = children;
 		this.birthday = birthday;
