@@ -91,8 +91,8 @@ public class User {
 	@Override
 	public String toString() {
 		return "User{"
-				+ "name='" + name + '\''
-				+ "children='" + children + '\''
+				+ "name='" + name + '\'' + ','
+				+ "children='" + children + '\'' + ','
 				+ "birthday='" + birthday + '\''
 				+ '}';
 	}
