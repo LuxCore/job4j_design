@@ -47,7 +47,10 @@ class MapTest {
 		User johnDoeTheSame = new User("John Doe", 2, LocalDate.of(1970, 1, 1));
 		Map<User, Object> users = Map.of(johnDoe, new Object(), johnDoeTheSame, new Object());
 		assertAll(
-				() -> assertNotEquals(johnDoe,johnDoeTheSame, "johnDoe != johnDoeTheSame"),
+				() -> assertNotEquals(johnDoe, johnDoeTheSame,
+						"johnDoe does not equal johnDoeTheSame"),
+				() -> assertNotEquals(johnDoe.hashCode(), johnDoeTheSame.hashCode(),
+						"johnDoe.hashCode() does not equal johnDoeTheSame.hashCode()"),
 				() -> assertEquals(2, users.size()),
 				() -> assertFalse(users.containsKey(new User("John Doe", 2, LocalDate.of(1970, 1, 1))))
 		);
