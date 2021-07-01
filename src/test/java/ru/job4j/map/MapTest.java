@@ -9,6 +9,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class MapTest {
 
@@ -41,11 +42,12 @@ class MapTest {
 	}
 
 	@Test
-	void whenObjectHaveNoEqualsAndHashcode() {
+	void whenObjectHasNoEqualsAndHashcode() {
 		User johnDoe = new User("John Doe", 2, LocalDate.of(1970, 1, 1));
 		User johnDoeTheSame = new User("John Doe", 2, LocalDate.of(1970, 1, 1));
 		Map<User, Object> users = Map.of(johnDoe, new Object(), johnDoeTheSame, new Object());
 		assertAll(
+				() -> assertNotEquals(johnDoe,johnDoeTheSame, "johnDoe != johnDoeTheSame"),
 				() -> assertEquals(2, users.size()),
 				() -> assertFalse(users.containsKey(new User("John Doe", 2, LocalDate.of(1970, 1, 1))))
 		);
