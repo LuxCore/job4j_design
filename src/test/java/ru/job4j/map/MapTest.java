@@ -55,4 +55,24 @@ class MapTest {
 				() -> assertFalse(users.containsKey(new User("John Doe", 2, LocalDate.of(1970, 1, 1))))
 		);
 	}
+
+	@Test
+	void whenObjectHasNoEqualsAndHasHashcode() {
+		UserWithHashcode johnDoe = new UserWithHashcode(
+				"John Doe", 2, LocalDate.of(1970, 1, 1));
+		UserWithHashcode johnDoeTheSame = new UserWithHashcode(
+				"John Doe", 2, LocalDate.of(1970, 1, 1));
+		Map<UserWithHashcode, Object> users = Map.of(johnDoe, new Object(), johnDoeTheSame, new Object());
+		UserWithHashcode expected = new UserWithHashcode(
+				"John Doe", 2, LocalDate.of(1970, 1, 1));
+		assertAll(
+				() -> assertNotEquals(johnDoe, johnDoeTheSame,
+						"johnDoe does not equal johnDoeTheSame"),
+				() -> assertEquals(johnDoe.hashCode(), johnDoeTheSame.hashCode(),
+						"johnDoe.hashCode() and johnDoeTheSame.hashCode()"),
+				() -> assertEquals(2, users.size(), "users.size()"),
+				() -> assertFalse(users.containsKey(expected),
+						"users.containsKey(" + expected.toString() + ")")
+		);
+	}
 }
