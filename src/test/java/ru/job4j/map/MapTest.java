@@ -86,7 +86,21 @@ class MapTest {
 		users.put(johnDoeTheSame, new Object());
 		UserWithEquals expected = new UserWithEquals(
 				"John Doe", 2, LocalDate.of(1970, 1, 1));
+		UserWithEquals janeDoe = new UserWithEquals(
+				"Jane Doe", 1, LocalDate.of(1970, 1, 2));
+		UserWithEquals joshuaDoe = new UserWithEquals(
+				"Joshua Doe", 2, LocalDate.of(1970, 1, 1));
+		UserWithEquals johnDoeSecond = new UserWithEquals(
+				"John Doe", 2, LocalDate.of(1969, 1, 1));
+		UserWithHashcode otherTypeOfUser = new UserWithHashcode(
+				"John Doe", 2, LocalDate.of(1970, 1, 1));
 		assertAll(
+				() -> assertEquals(johnDoe, johnDoe, "johnDoe equals johnDoe"),
+				() -> assertNotEquals(johnDoe, null, "johnDoe does not equal null"),
+				() -> assertNotEquals(johnDoe, otherTypeOfUser, "johnDoe is not of UserWithHashcode type"),
+				() -> assertNotEquals(johnDoe, janeDoe, "johnDoe.children differs from janeDoe.children"),
+				() -> assertNotEquals(johnDoe, joshuaDoe, "johnDoe.name differs from janeDoe.name"),
+				() -> assertNotEquals(johnDoe, johnDoeSecond, "johnDoe.birthday differs from janeDoe.birthday"),
 				() -> assertEquals(johnDoe, johnDoeTheSame, "johnDoe equals johnDoeTheSame"),
 				() -> assertNotEquals(johnDoe.hashCode(), johnDoeTheSame.hashCode(),
 						"johnDoe.hashCode() and johnDoeTheSame.hashCode()"),
