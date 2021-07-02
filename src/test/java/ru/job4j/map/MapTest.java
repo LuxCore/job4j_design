@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -69,6 +70,25 @@ class MapTest {
 				() -> assertNotEquals(johnDoe, johnDoeTheSame,
 						"johnDoe does not equal johnDoeTheSame"),
 				() -> assertEquals(johnDoe.hashCode(), johnDoeTheSame.hashCode(),
+						"johnDoe.hashCode() and johnDoeTheSame.hashCode()"),
+				() -> assertEquals(2, users.size(), "users.size()"),
+				() -> assertFalse(users.containsKey(expected),
+						"users.containsKey(" + expected.toString() + ")")
+		);
+	}
+
+	@Test
+	void whenObjectHasEqualsAndHasNoHashcode() {
+		UserWithEquals johnDoe = new UserWithEquals("John Doe", 2, LocalDate.of(1970, 1, 1));
+		UserWithEquals johnDoeTheSame = new UserWithEquals("John Doe", 2, LocalDate.of(1970, 1, 1));
+		Map<UserWithEquals, Object> users = new HashMap<>();
+		users.put(johnDoe, new Object());
+		users.put(johnDoeTheSame, new Object());
+		UserWithEquals expected = new UserWithEquals(
+				"John Doe", 2, LocalDate.of(1970, 1, 1));
+		assertAll(
+				() -> assertEquals(johnDoe, johnDoeTheSame, "johnDoe equals johnDoeTheSame"),
+				() -> assertNotEquals(johnDoe.hashCode(), johnDoeTheSame.hashCode(),
 						"johnDoe.hashCode() and johnDoeTheSame.hashCode()"),
 				() -> assertEquals(2, users.size(), "users.size()"),
 				() -> assertFalse(users.containsKey(expected),
