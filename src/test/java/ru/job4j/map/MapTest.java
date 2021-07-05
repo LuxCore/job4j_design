@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MapTest {
 
@@ -106,6 +107,39 @@ class MapTest {
 						"johnDoe.hashCode() and johnDoeTheSame.hashCode()"),
 				() -> assertEquals(2, users.size(), "users.size()"),
 				() -> assertFalse(users.containsKey(expected),
+						"users.containsKey(" + expected.toString() + ")")
+		);
+	}
+
+	@Test
+	void whenObjectHasEqualsAndHashcode() {
+		UserWithEqualsHashcode johnDoe = new UserWithEqualsHashcode("John Doe", 2, LocalDate.of(1970, 1, 1));
+		UserWithEqualsHashcode johnDoeTheSame = new UserWithEqualsHashcode("John Doe", 2, LocalDate.of(1970, 1, 1));
+		Map<UserWithEqualsHashcode, Object> users = new HashMap<>();
+		users.put(johnDoe, new Object());
+		users.put(johnDoeTheSame, new Object());
+		UserWithEqualsHashcode expected = new UserWithEqualsHashcode(
+				"John Doe", 2, LocalDate.of(1970, 1, 1));
+		UserWithEqualsHashcode janeDoe = new UserWithEqualsHashcode(
+				"Jane Doe", 1, LocalDate.of(1970, 1, 2));
+		UserWithEqualsHashcode joshuaDoe = new UserWithEqualsHashcode(
+				"Joshua Doe", 2, LocalDate.of(1970, 1, 1));
+		UserWithEqualsHashcode johnDoeSecond = new UserWithEqualsHashcode(
+				"John Doe", 2, LocalDate.of(1969, 1, 1));
+		UserWithHashcode otherTypeOfUser = new UserWithHashcode(
+				"John Doe", 2, LocalDate.of(1970, 1, 1));
+		assertAll(
+				() -> assertEquals(johnDoe, johnDoe, "johnDoe equals johnDoe"),
+				() -> assertNotEquals(johnDoe, null, "johnDoe does not equal null"),
+				() -> assertNotEquals(johnDoe, otherTypeOfUser, "johnDoe is not of UserWithHashcode type"),
+				() -> assertNotEquals(johnDoe, janeDoe, "johnDoe.children differs from janeDoe.children"),
+				() -> assertNotEquals(johnDoe, joshuaDoe, "johnDoe.name differs from janeDoe.name"),
+				() -> assertNotEquals(johnDoe, johnDoeSecond, "johnDoe.birthday differs from janeDoe.birthday"),
+				() -> assertEquals(johnDoe, johnDoeTheSame, "johnDoe equals johnDoeTheSame"),
+				() -> assertEquals(johnDoe.hashCode(), johnDoeTheSame.hashCode(),
+						"johnDoe.hashCode() and johnDoeTheSame.hashCode()"),
+				() -> assertEquals(1, users.size(), "users.size()"),
+				() -> assertTrue(users.containsKey(expected),
 						"users.containsKey(" + expected.toString() + ")")
 		);
 	}
